@@ -6,10 +6,11 @@ use Setting;
 use Aqayepardakht\Parrot\Service;
 use Aqayepardakht\Parrot\Events\ParrotCreateToken;
 use Aqayepardakht\Parrot\Events\ParrotNullToken;
+use Illuminate\Support\Facades\Redis;
 
 trait ClientToken {
     protected function getToken(Service $service) {
-        if (Setting::get($service->getServiceName(), false)) return Setting::get($service->getServiceName());
+        if (Redis::get('token:'.$service->getServiceName())) return Redis::get('token:'.$service->getServiceName());
 
         $params  = $service->getAuthParams();
         $baseUrl = $service->getBaseUrl();
@@ -30,11 +31,10 @@ trait ClientToken {
     }
 
     protected function setToken($service, $token) {
-        Setting::set($service, $token);
-        setting()->save();
+        Redis::set('token:'.$service, $token);
     }
 
     protected function removeToken($service) {
-        Setting::forget($service);
+        Redis::del('token:'.$service);
     }
 }
