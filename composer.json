@@ -20,12 +20,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Akaunting\\Setting\\Provider::class",
                 "Aqayepardakht\\Parrot\\Providers"
             ],
-            "aliases": {
-                "Setting": "Akaunting\\Setting\\Facade"
-            }
         }
     }
 }
