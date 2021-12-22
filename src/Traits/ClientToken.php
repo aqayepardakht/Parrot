@@ -16,7 +16,7 @@ trait ClientToken {
         $baseUrl = $service->getBaseUrl();
         $result  = $this->send($baseUrl.'/oauth/token', 'POST', $params);
 
-        ParrotCreateToken::distpach($service, $result);
+        ParrotCreateToken::dispatch($service, $result);
 
         $result = $result->json();
 
@@ -25,7 +25,7 @@ trait ClientToken {
             return $result->access_token;
         }
 
-        ParrotNullToken::distpach($service);
+        ParrotNullToken::dispatch($service);
 
         return null;
     }
