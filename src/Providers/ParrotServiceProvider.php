@@ -21,7 +21,7 @@ class ParrotServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->publishes([
-            __DIR__.'/../config/parrot.php' => config_path('parrot.php'),
+            __DIR__.'/../configs/parrot.php' => config_path('parrot.php'),
         ]);
     }
 }
