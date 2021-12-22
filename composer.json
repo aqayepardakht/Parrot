@@ -19,7 +19,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Aqayepardakht\\Parrot\\Providers"
+                "Aqayepardakht\\Parrot\\Providers\\ParrotServiceProvider"
             ]
         }
     }
