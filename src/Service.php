@@ -42,6 +42,9 @@ class Service {
 
     public function getBaseUrl(): string {
         $url = parse_url($this->url);
+
+        $url['port'] = !empty($url['port']) ? $url['port'] : '';
+
         return $url['scheme'] . '://' . $url['host'].':'.$url['port'];
     }
 
