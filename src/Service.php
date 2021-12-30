@@ -24,7 +24,7 @@ class Service {
         $this->action      = $action;
         $this->url         = $config['url'].$config['actions'][$action]['url'].'/';
         $this->http_method = $config['actions'][$action]['method'];
-        $this->auth        = $config['auth'];
+        $this->auth        = !empty($config['auth']) ? $config['auth']: null;
         // $this->timeout     = $config['timeout'];
     }
 
