@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Redis;
 
 trait ClientToken {
     protected function getToken(Service $service) {
-        if (!$service->hasAuth()) return null;
         if (Redis::get('token:'.$service->getServiceName())) return Redis::get('token:'.$service->getServiceName());
 
         $params  = $service->getAuthParams();

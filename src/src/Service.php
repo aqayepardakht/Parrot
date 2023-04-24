@@ -22,9 +22,9 @@ class Service {
         $this->config      = $config;
         $this->service     = $service;
         $this->action      = $action;
-        $this->url         = $config['url'].$config['actions'][$action]['url'].'/';
+        $this->url         = $config['url'].$config['actions'][$action]['url'];
         $this->http_method = $config['actions'][$action]['method'];
-        $this->auth        = $config['auth'] ?? null;
+        $this->auth        = !empty($config['auth']) ? $config['auth'] : null;
         // $this->timeout     = $config['timeout'];
     }
 
@@ -58,10 +58,6 @@ class Service {
 
     public function getAuthParams() {
         return $this->auth;
-    }
-
-    public function hasAuth() {
-        return !!$this->auth;
     }
 
     public function expirdTime() {

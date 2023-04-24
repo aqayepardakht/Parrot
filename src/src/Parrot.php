@@ -18,8 +18,9 @@ abstract class Parrot extends Request {
         $response = $this->withToken($this->getToken($service))
                         ->send(
                             $service->getUrl().$this->appendUrl,
-                            $service->getMethod(),
+                            $service->getMethod()
                         );
+
 
         if ($response->status() === 401) {
             ParrotUnauthorized::dispatch($service);
@@ -41,7 +42,7 @@ abstract class Parrot extends Request {
         } else {
             Redis::set($service->getUrl().$this->appendUrl, serialize($response));
         }
- 
+
         return $this->parser($response->json());
     }
 
