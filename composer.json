@@ -14,7 +14,7 @@
     "minimum-stability": "dev",
     "require": {
         "aqayepardakht/http": "^2.0.6",
-        "predis/predis": "2.0.x-dev"
+        "predis/predis": "^2.1.2"
     },
     "extra": {
         "laravel": {
