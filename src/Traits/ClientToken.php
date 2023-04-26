@@ -7,15 +7,21 @@ use Aqayepardakht\Parrot\Service;
 use Aqayepardakht\Parrot\Events\ParrotCreateToken;
 use Aqayepardakht\Parrot\Events\ParrotNullToken;
 use Illuminate\Support\Facades\Redis;
+use Aqayepardakht\Parrot\Events\ParrotUnauthorized;
 
 trait ClientToken {
     protected function getToken(Service $service) {
-        if (!$service->hasAuth()) return null;
-        if (Redis::get('token:'.$service->getServiceName())) return Redis::get('token:'.$service->getServiceName());
+        // if (!$service->hasAuth()) return null;
+
+        if ($this->token) return $this->token;
+
+        // if (Redis::get('token:'.$service->getServiceName())) 
+        //     return Redis::get('token:'.$service->getServiceName());
 
         $params  = $service->getAuthParams();
         $baseUrl = $service->getBaseUrl();
-        $result  = $this->send($baseUrl.'/oauth/token', 'POST', $params);
+
+        $result  = $this->send($baseUrl.'/oauth/token', 'POST', $service->getAuthParams());
 
         ParrotCreateToken::dispatch($service, $result);
 
@@ -31,11 +37,20 @@ trait ClientToken {
         return null;
     }
 
+    protected function handleUnauthorized(): Response
+    {
+        ParrotUnauthorized::dispatch($this->getService());
+
+        $this->removeToken($this->getService()->getServiceName());
+
+        return $this->delivery();
+    }
+
     protected function setToken($service, $token) {
-        Redis::set('token:'.$service, $token);
+        // Redis::set('token:'.$service, $token);
     }
 
     protected function removeToken($service) {
-        Redis::del('token:'.$service);
+        // Redis::del('token:'.$service);
     }
 }

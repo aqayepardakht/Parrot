@@ -22,9 +22,9 @@ class Service {
         $this->config      = $config;
         $this->service     = $service;
         $this->action      = $action;
-        $this->url         = $config['url'].$config['actions'][$action]['url'].'/';
-        $this->http_method = $config['actions'][$action]['method'];
-        $this->auth        = $config['auth'] ?? null;
+        // $this->url         = $config['url'].'parrot/'.$config['actions'][$action]['url'];
+        $this->url         = $config['url'].'parrot/';
+        $this->auth        = $config['actions'][$action]['auth'] ?? null;
         // $this->timeout     = $config['timeout'];
     }
 
@@ -33,7 +33,7 @@ class Service {
     }
 
     public function getActionName(): string {
-        $this->action;
+        return $this->action;
     }
 
     public function getUrl(): string {
@@ -42,10 +42,8 @@ class Service {
 
     public function getBaseUrl(): string {
         $url = parse_url($this->url);
-
         $url['port'] = !empty($url['port']) ? $url['port'] : '';
-
-        return $url['scheme'] . '://' . $url['host'].':'.$url['port'];
+        return $url['scheme'] . '://' . $url['host'];
     }
 
     public function getMethod(): string {
@@ -54,6 +52,13 @@ class Service {
 
     public function getTimeout(): int {
         return $this->timeout;
+    }
+
+    public function setAuthParams($client_id, $client_secret) {
+        $this->auth['client_id']     = $client_id;
+        $this->auth['client_secret'] = $client_secret;        
+
+        return $this;
     }
 
     public function getAuthParams() {
