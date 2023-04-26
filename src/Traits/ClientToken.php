@@ -37,15 +37,6 @@ trait ClientToken {
         return null;
     }
 
-    protected function handleUnauthorized(): Response
-    {
-        ParrotUnauthorized::dispatch($this->getService());
-
-        $this->removeToken($this->getService()->getServiceName());
-
-        return $this->delivery();
-    }
-
     protected function setToken($service, $token) {
         // Redis::set('token:'.$service, $token);
     }

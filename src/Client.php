@@ -21,9 +21,11 @@ abstract class Client extends Request
 
     protected ?Service $service = null;
 
+    protected bool $useCache = false;
+
     private ?ServiceDiscovery $discoveryInstance = null;
 
-    abstract protected function handleResponse(Response $response): void;
+    protected function handleResponse(Response $response): void {}
 
     public function dispatch(): Response
     {
@@ -63,6 +65,12 @@ abstract class Client extends Request
 
         $this->prepareParams();
 
+        $cacheKey = $this->getService()->getUrl();
+
+        if ($this->useCache && Redis::exists($cacheKey)) {
+            return unserialize(Redis::get($cacheKey));
+        }
+
         $response = $this->send(
             $this->getService()->getUrl(), 
             'POST'
@@ -76,9 +84,32 @@ abstract class Client extends Request
             return $this->handleFailedRequest($response);
         }
 
-        $this->cacheResponse($response);
+        $this->cacheResponse($response, $cacheKey);
 
         return $response;
+    }
+
+    protected function handle(Response $response): Response
+    {
+        $this->handleResponse($response);
+
+        return $response;
+    }
+
+    protected function handleUnauthorized(): Response
+    {
+        ParrotUnauthorized::dispatch($this->getService());
+
+        $this->removeToken($this->getService()->getServiceName());
+
+        return $this->delivery();
+    }
+
+    protected function handleFailedRequest(Response $response): Response
+    {
+        ParrotFailedRequest::dispatch($this->getService(), $response);
+
+        return $this->delivery();
     }
 
     protected function getService(): Service
@@ -99,32 +130,12 @@ abstract class Client extends Request
         }
     }
 
-    protected function handle(Response $response): Response
+    protected function cacheResponse(Response $response, string $cacheKey): void
     {
-        $this->handleResponse($response);
+        if (!$this->useCache) return;
 
-        return $response;
-    }
-
-    protected function handleFailedRequest(Response $response): Response
-    {
-        ParrotFailedRequest::dispatch($this->getService(), $response);
-
-        $cachedResponse = Redis::get($this->getService()->getUrl() . $this->appendUrl);
-
-        if ($cachedResponse) {
-            return unserialize($cachedResponse);
-        }
-
-        throw new \Exception('Failed request');
-    }
-
-    protected function cacheResponse(Response $response): void
-    {
-        if ($this->getService()->expirdTime()) {
-            Redis::set($this->getService()->getUrl() . $this->appendUrl, serialize($response), 'EX', $this->getService()->expirdTime());
-        } else {
-            Redis::set($this->getService()->getUrl() . $this->appendUrl, serialize($response));
-        }
+        $expiration = $this->getService()->expirdTime();
+        
+        Redis::set($cacheKey, serialize($response), $expiration ? ['EX' => $expiration] : []);
     }
 }
