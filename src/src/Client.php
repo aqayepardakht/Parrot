@@ -7,7 +7,7 @@ use Aqayepardakht\Parrot\Traits\ClientToken;
 use Aqayepardakht\Http\Request;
 use Aqayepardakht\Http\Response;
 use Aqayepardakht\Parrot\Events\ParrotUnauthorized;
-use Aqayepardakht\Parrot\Events\ParrotFailedRequest;
+use Aqayepardakht\Parrot\Events\ParrotFaildRequest;
 
 abstract class Client extends Request
 {

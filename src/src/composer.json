@@ -1,0 +1,26 @@
+{
+    "name": "aqayepardakht/parrot",
+    "autoload": {
+        "psr-4": {
+            "Aqayepardakht\\Parrot\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "AqayePardakht",
+            "email": "aqayepardakht@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "aqayepardakht/http": "dev-main",
+        "predis/predis": "2.0.x-dev"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aqayepardakht\\Parrot\\Providers\\ParrotServiceProvider"
+            ]
+        }
+    }
+}
