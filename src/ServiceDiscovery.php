@@ -13,8 +13,7 @@ class ServiceDiscovery {
         $adapter = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $adapter));
 
         $this->service = strstr($adapter, '_', true);
-        $this->action  = substr(strstr($adapter, '_'), 1);
-
+        $this->action  = $adapter;
         $this->config = $this->prepareConfig($config);
     }
 
@@ -52,7 +51,7 @@ class ServiceDiscovery {
 
     public function getService() : ?Service {
         if (!$this->existService()) return null;
-        
+
         return new Service(
             $this->config['services'][$this->service],
             $this->service,

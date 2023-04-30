@@ -14,11 +14,13 @@ class Parrot {
         Route::any('/parrot', function() {
             $service = request()->service;
             $explode = explode('_', $service);
+            $requestType = end($explode);
+            array_pop($explode); 
 
-            $serviceName = ucfirst($explode[0]).($explode[1] === 'request' ? 'Response' : 'Request'); 
+            $serviceName = ucfirst(implode('', array_map('ucfirst', $explode))).($requestType === 'request' ? 'Response' : 'Request'); 
             $serviceName = "App\Parrots\\".$serviceName;
 
-            $service = new $serviceName(request()->username);
+            $service = new $serviceName();
 
             return $service->answer();
         })->middleware('client');
